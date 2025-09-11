@@ -1,0 +1,31 @@
+services:
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    restart: unless-stopped
+    ports:
+      - "9042:9042"      # CQL native transport port
+      - "7000:7000"      # intra-node communication
+      - "7001:7001"      # TLS intra-node communication (optional)
+      - "7199:7199"      # JMX monitoring port
+      - "9160:9160"      # thrift service port (deprecated)
+    environment:
+      CASSANDRA_CLUSTER_NAME: ${CASSANDRA_CLUSTER_NAME:-DummyCluster}
+      CASSANDRA_DC: ${CASSANDRA_DC:-DC1}
+      CASSANDRA_RACK: ${CASSANDRA_RACK:-Rack1}
+      CASSANDRA_ENDPOINT_SNITCH: ${CASSANDRA_ENDPOINT_SNITCH:-GossipingPropertyFileSnitch}
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    networks:
+      - cassandra_net
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  cassandra_data:
+
+networks:
+  cassandra_net:
