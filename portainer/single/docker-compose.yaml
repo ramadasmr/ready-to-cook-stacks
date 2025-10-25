@@ -1,0 +1,26 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - "9000:9000"      # Web UI (HTTP)
+      - "9443:9443"      # Web UI (HTTPS)
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - portainer_net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  portainer_data:
+
+networks:
+  portainer_net:
