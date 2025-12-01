@@ -1,0 +1,21 @@
+services:
+  memcached:
+    image: memcached:latest
+    container_name: memcached
+    restart: unless-stopped
+    ports:
+      - "11211:11211"
+    command: memcached -m ${MEMCACHED_MEMORY:-64} -vv
+    environment:
+      MEMCACHED_MEMORY: ${MEMCACHED_MEMORY:-64}
+    networks:
+      - memcached_net
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo stats | nc 127.0.0.1 11211"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  memcached_net:
+
