@@ -1,0 +1,26 @@
+services:
+  couchdb:
+    image: couchdb:3
+    container_name: couchdb
+    restart: unless-stopped
+    ports:
+      - "5984:5984"   # CouchDB HTTP API
+    environment:
+      COUCHDB_USER: ${COUCHDB_USER:-admin}
+      COUCHDB_PASSWORD: ${COUCHDB_PASSWORD:-passw0rd}
+
+    volumes:
+      - couchdb_data:/opt/couchdb/data
+    networks:
+      - couchdb_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5984/_up"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  couchdb_data:
+
+networks:
+  couchdb_net:
