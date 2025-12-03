@@ -1,0 +1,25 @@
+services:
+  traefik:
+    image: traefik:v3.1
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080" # Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - traefik_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/overview"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+networks:
+  traefik_net:
+
