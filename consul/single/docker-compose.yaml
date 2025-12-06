@@ -1,0 +1,24 @@
+services:
+  consul:
+    image: consul:1.18
+    container_name: consul
+    restart: unless-stopped
+    ports:
+      - "8500:8500" # UI + HTTP API
+      - "8600:8600/udp" # DNS
+    command: "agent -dev -client=0.0.0.0"
+    volumes:
+      - consul_data:/consul/data
+    networks:
+      - consul_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8500/v1/status/leader"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  consul_data:
+
+networks:
+  consul_net:
