@@ -1,0 +1,35 @@
+services:
+  automq:
+    image: automqinc/automq:latest
+    container_name: automq
+    restart: unless-stopped
+    ports:
+      - "9092:9092"   # Kafka client access
+      - "9093:9093"   # Controller port
+    environment:
+      AUTOMQ_NODE_ID: 1
+      AUTOMQ_PROCESS_ROLES: controller,broker
+
+      AUTOMQ_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      AUTOMQ_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      AUTOMQ_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      AUTOMQ_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      AUTOMQ_CONTROLLER_QUORUM_VOTERS: 1@automq:9093
+
+      AUTOMQ_DATA_DIRS: /var/lib/automq/data
+      AUTOMQ_DELETE_TOPIC_ENABLE: "true"
+    volumes:
+      - automq_data:/var/lib/automq/data
+    networks:
+      - automq_net
+    healthcheck:
+      test: ["CMD", "bash", "-c", "nc -z localhost 9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  automq_data:
+
+networks:
+  automq_net:
