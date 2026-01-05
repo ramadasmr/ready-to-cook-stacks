@@ -1,0 +1,30 @@
+services:
+  valkey:
+    image: valkey/valkey:7
+    container_name: valkey
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: >
+      valkey-server
+      --requirepass ${VALKEY_PASSWORD:-passw0rd}
+      --save 60 1
+      --loglevel warning
+    environment:
+      VALKEY_PASSWORD: ${VALKEY_PASSWORD:-passw0rd}
+    volumes:
+      - valkey_data:/data
+    networks:
+      - valkey_net
+    healthcheck:
+      test: ["CMD", "valkey-cli", "-a", "${VALKEY_PASSWORD:-passw0rd}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  valkey_data:
+
+networks:
+  valkey_net:
+
