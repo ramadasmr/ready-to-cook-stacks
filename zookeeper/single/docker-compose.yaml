@@ -1,0 +1,27 @@
+services:
+  zookeeper:
+    image: bitnami/zookeeper:3.9
+    container_name: zookeeper
+    restart: unless-stopped
+    ports:
+      - "2181:2181" # Client port
+      - "2888:2888" # Follower port
+      - "3888:3888" # Election port
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_SERVER_ID: 1
+    volumes:
+      - zookeeper_data:/bitnami/zookeeper
+    networks:
+      - zookeeper_net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  zookeeper_data:
+
+networks:
+  zookeeper_net:
