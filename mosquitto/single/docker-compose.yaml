@@ -1,0 +1,27 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0.18
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "${MOSQUITTO_MQTT_PORT:-1883}:1883"
+      - "${MOSQUITTO_WS_PORT:-9001}:9001"
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_config:/mosquitto/config
+      - mosquitto_log:/mosquitto/log
+    networks:
+      - mosquitto_net
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t '$$SYS/#' -C 1 | head -1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  mosquitto_data:
+  mosquitto_config:
+  mosquitto_log:
+
+networks:
+  mosquitto_net:
