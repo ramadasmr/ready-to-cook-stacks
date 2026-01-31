@@ -31,10 +31,10 @@ docker compose -f postgres/single/docker-compose.yaml up -d
 docker compose -f redis/single/docker-compose.yaml up -d
 
 # Start Grafana
-docker compose -f grafana/single/docker-compose.yaml up -d
+docker compose -f kafka/single/docker-compose.yaml up -d
 ```
 
-### Stopping a Service
+### Stopping a Service 
 
 ```bash
 # Stop PostgreSQL
