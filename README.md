@@ -18,6 +18,10 @@ cd ready-to-cook-stacks/
 docker compose -f <application>/single/docker-compose.yaml up -d
 ```
 
+## 🧰 Requirements
+
+- Docker (latest stable version recommended)
+- Docker Compose v2 (`docker compose` CLI)
 
 ## 💻 Usage
 
