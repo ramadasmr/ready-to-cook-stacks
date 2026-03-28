@@ -1,0 +1,24 @@
+services:
+  coredns:
+    image: coredns/coredns:latest
+    container_name: coredns
+    restart: unless-stopped
+    ports:
+      - "1053:53/udp"
+      - "1053:53/tcp"
+    command: -conf /etc/coredns/Corefile
+    volumes:
+      - coredns_config:/etc/coredns
+    networks:
+      - coredns_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8181/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  coredns_config:
+
+networks:
+  coredns_net:
