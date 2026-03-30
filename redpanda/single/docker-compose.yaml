@@ -1,0 +1,31 @@
+services:
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: redpanda
+    restart: unless-stopped
+    ports:
+      - "9092:9092"
+      - "9644:9644"
+    command: >
+      redpanda start
+      --overprovisioned
+      --smp 1
+      --memory 1G
+      --reserve-memory 0M
+      --node-id 0
+      --check=false
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+    networks:
+      - redpanda_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9644/v1/status/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  redpanda_data:
+
+networks:
+  redpanda_net:
