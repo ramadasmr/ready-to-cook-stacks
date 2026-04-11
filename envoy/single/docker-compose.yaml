@@ -1,0 +1,26 @@
+services:
+  envoy:
+    image: envoyproxy/envoy:latest
+    container_name: envoy
+    restart: unless-stopped
+    ports:
+      - "9901:9901"
+      - "10000:10000"
+    command: >
+      -c /etc/envoy/envoy.yaml
+      --log-level info
+    volumes:
+      - envoy_config:/etc/envoy
+    networks:
+      - envoy_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9901/server_info"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  envoy_config:
+
+networks:
+  envoy_net:
