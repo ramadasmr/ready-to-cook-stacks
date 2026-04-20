@@ -1,0 +1,25 @@
+services:
+  pulsar:
+    image: apachepulsar/pulsar:latest
+    container_name: pulsar
+    restart: unless-stopped
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    command: >
+      bin/pulsar standalone
+    volumes:
+      - pulsar_data:/pulsar/data
+    networks:
+      - pulsar_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/admin/v2/clusters"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  pulsar_data:
+
+networks:
+  pulsar_net:
