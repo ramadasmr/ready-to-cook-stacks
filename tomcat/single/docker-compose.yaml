@@ -1,0 +1,13 @@
+services:
+  tomcat:
+    image: tomcat:10.1-jdk17
+    container_name: tomcat
+    restart: unless-stopped
+    ports:
+      - "${TOMCAT_PORT:-8080}:8080"
+    networks:
+      - tomcat_net
+
+networks:
+  tomcat_net:
+
