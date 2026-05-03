@@ -1,0 +1,18 @@
+services:
+  httpd:
+    image: httpd:2.4
+    container_name: httpd
+    restart: unless-stopped
+    ports:
+      - "${HTTPD_PORT:-8080}:80"
+    networks:
+      - httpd_net
+    healthcheck:
+      test: ["CMD", "httpd", "-t"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  httpd_net:
+
