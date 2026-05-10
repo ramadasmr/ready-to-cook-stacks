@@ -1,0 +1,31 @@
+services:
+  nats:
+    image: nats:2
+    container_name: nats
+    restart: unless-stopped
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: >
+      -js
+      -m 8222
+      --user ${NATS_USER:-admin}
+      --pass ${NATS_PASSWORD:-passw0rd}
+    environment:
+      NATS_USER: ${NATS_USER:-admin}
+      NATS_PASSWORD: ${NATS_PASSWORD:-passw0rd}
+    volumes:
+      - nats_data:/data
+    networks:
+      - nats_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8222/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  nats_data:
+
+networks:
+  nats_net:
