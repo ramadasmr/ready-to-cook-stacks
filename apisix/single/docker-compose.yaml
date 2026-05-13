@@ -1,0 +1,22 @@
+services:
+  apisix:
+    image: apache/apisix:3.13.0-debian
+    container_name: apisix
+    restart: unless-stopped
+    ports:
+      - "9180:9180" # Admin API
+      - "9080:9080" # Proxy (http)
+      - "9443:9443" # Proxy (https)
+    environment:
+      APISIX_STAND_ALONE: "true"
+    networks:
+      - apisix_net
+    healthcheck:
+      test: ["CMD-SHELL", "apisix health-check || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  apisix_net:
+
