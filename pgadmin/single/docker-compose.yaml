@@ -1,0 +1,26 @@
+services:
+  pgadmin:
+    image: dpage/pgadmin4:9
+    container_name: pgadmin
+    restart: unless-stopped
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-passw0rd}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - pgadmin_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.settimeout(2); s.connect(('127.0.0.1',80)); s.close()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgadmin_data:
+
+networks:
+  pgadmin_net:
+
