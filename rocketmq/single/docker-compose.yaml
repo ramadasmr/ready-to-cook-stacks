@@ -1,0 +1,24 @@
+services:
+  rocketmq:
+    image: apache/rocketmq:5.3.1
+    container_name: rocketmq
+    restart: unless-stopped
+    ports:
+      - "9876:9876"   # NameServer
+      - "10911:10911" # Broker
+      - "10909:10909" # Broker (HA)
+    environment:
+      NAMESRV_ADDR: rocketmq:9876
+    command: >
+      sh -lc "mqnamesrv & sleep 2 && mqbroker -n rocketmq:9876"
+    volumes:
+      - rocketmq_data:/home/rocketmq/store
+    networks:
+      - rocketmq_net
+
+volumes:
+  rocketmq_data:
+
+networks:
+  rocketmq_net:
+
