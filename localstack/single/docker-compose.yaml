@@ -1,0 +1,27 @@
+services:
+  localstack:
+    image: localstack/localstack:4
+    container_name: localstack
+    restart: unless-stopped
+    ports:
+      - "${LOCALSTACK_EDGE_PORT:-4566}:4566"
+    environment:
+      SERVICES: ${LOCALSTACK_SERVICES:-s3,sqs,sns,dynamodb,lambda,iam,sts,cloudwatch,logs}
+      DEBUG: ${LOCALSTACK_DEBUG:-0}
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - localstack_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.settimeout(2); s.connect(('127.0.0.1',4566)); s.close()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  localstack_data:
+
+networks:
+  localstack_net:
+
