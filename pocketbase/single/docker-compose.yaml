@@ -1,0 +1,22 @@
+services:
+  pocketbase:
+    image: ghcr.io/muchobien/pocketbase:0.22.21
+    container_name: pocketbase
+    restart: unless-stopped
+    ports:
+      - "${POCKETBASE_PORT:-8090}:8090"
+    volumes:
+      - pocketbase_data:/pb/pb_data
+    networks:
+      - pocketbase_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8090/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  pocketbase_data:
+
+networks:
+  pocketbase_net:
