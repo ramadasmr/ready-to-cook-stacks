@@ -1,0 +1,21 @@
+services:
+  wiremock:
+    image: wiremock/wiremock:3.13.1
+    container_name: wiremock
+    restart: unless-stopped
+    ports:
+      - "${WIREMOCK_PORT:-8080}:8080"
+    command: ["--verbose", "--local-response-templating"]
+    volumes:
+      - wiremock_mappings:/home/wiremock/mappings
+      - wiremock_files:/home/wiremock/__files
+    networks:
+      - wiremock_net
+
+volumes:
+  wiremock_mappings:
+  wiremock_files:
+
+networks:
+  wiremock_net:
+
